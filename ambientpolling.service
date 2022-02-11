@@ -1,0 +1,27 @@
+# systemd service file to start PoolControlRPi
+
+[Unit]
+Description=AmbientPoll service to poll weather station, format live data into influxdb record and write to influx udp.
+Wants=network.target
+
+[Service]
+Type=simple
+# Run as normal pi user 
+User=pi
+Group=pi
+WorkingDirectory=/home/dmounday/data-polling
+
+Nice=5
+
+# uncomment the next line for a more verbose log output
+ExecStart=/home/dmounday/data-polling/AmbientPoll 192.168.3.74 localhost 8089 60
+# Use SIGINT to stop
+KillSignal=SIGINT
+# Auto restart on crash
+Restart=on-failure
+# Tag things in the log
+SyslogIdentifier=AmbientPoll
+
+[Install]
+WantedBy=multi-user.target
+
